@@ -121,7 +121,7 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-
+// Should remove later since I don't want anyone to have access to all users
 router.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
