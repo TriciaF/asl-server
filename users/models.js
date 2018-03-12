@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+// const QuestionSchema = require('../questions/models');
 
 mongoose.Promise = global.Promise;
 
@@ -13,18 +14,14 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''},
-  // questions:
+  // session: [QuestionSchema]
 });
-
-// don't need names
 
 UserSchema.methods.serialize = function() {
   return {
+    id: this._id,
     username: this.username || '',
-    firstName: this.firstName || '',
-    lastName: this.lastName || ''
+    session: this.session
   };
 };
 
