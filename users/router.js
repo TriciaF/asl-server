@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const {User} = require('./models');
+const {Question} = require('../questions/models');
+
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
@@ -100,7 +102,19 @@ router.post('/', jsonParser, (req, res) => {
     .then(hash => {
       return User.create({
         username,
-        password: hash
+        password: hash,
+        questions: [
+          {_id: '5aa7e931734d1d6b712047a2'},
+          {_id: '5aa7e945734d1d6b712047ab'},
+          {_id: '5aa7e953734d1d6b712047ad'},
+          {_id: '5aa7e95b734d1d6b712047af'},
+          {_id: '5aa7e965734d1d6b712047b1'},
+          {_id: '5aa7e96d734d1d6b712047b5'},
+          {_id: '5aa7e97a734d1d6b712047b8'},
+          {_id: '5aa7e982734d1d6b712047b9'},
+          {_id: '5aa7e98b734d1d6b712047bd'},
+          {_id: '5aa7e992734d1d6b712047be'}
+        ]
       });
     })
     .then(user => {
@@ -116,9 +130,24 @@ router.post('/', jsonParser, (req, res) => {
 
 // Should remove later since I don't want anyone to have access to all users
 router.get('/', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.serialize())))
+  User.find()
+    .populate('questions')
+    .then(users => {
+      res.json(users.map(user => user.serialize()));
+    })
     .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+router.get('/:id', (req, res) => {
+  User
+    .findById(req.params.id)
+    .populate('questions')
+    .then(user => {
+      res.json(user.serialize());
+    })
+    .catch(err => {
+      console.error(err);
+    });
 });
 
 module.exports = {router};

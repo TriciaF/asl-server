@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const {Question} = require('../questions/models');
 
 mongoose.Promise = global.Promise;
 
@@ -14,45 +13,31 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  // session: [{
-  //   image: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   answer: {
-  //     type: String,
-  //     required: true
-  //   },
-  //   position: {
-  //     type: Number,
-  //     default: 1
-  //   },
-  //   next: {
-  //     type: Number
-  //   }
-  // }]
-  session: [{
-    type: mongoose.Schema.Types.ObjectId, ref: 'Question',
-    next: {
-      type: Number,
-      default: 1
-    },
-    correct: {
-      type: Number,
-      default: 0
-    },
-    incorrect: {
-      type: Number,
-      default: 0
-    }
-  }]
+  questions: [{
+    type: mongoose.Schema.Types.ObjectId, ref: 'Question'
+  }],
+  next: {
+    type: Number,
+    default: null
+  },
+  correct: {
+    type: Number,
+    default: 0
+  },
+  incorrect: {
+    type: Number,
+    default: 0
+  }
 });
 
 UserSchema.methods.serialize = function() {
   return {
     id: this._id,
-    username: this.username || '',
-    session: this.session
+    username: this.username,
+    questions: this.questions,
+    next: this.next,
+    correct: this.correct,
+    incorrect: this.incorrect
   };
 };
 
