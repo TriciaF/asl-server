@@ -9,6 +9,7 @@ const {PORT, CLIENT_ORIGIN} = require('./config');
 const {dbConnect} = require('./db-mongoose');
 
 const { router: usersRouter } = require('./users');
+const { router: questionsRouter } = require('./questions');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 const app = express();
@@ -29,13 +30,14 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
+app.use('/api/questions', questionsRouter);
 app.use('/api/auth/', authRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 app.get('/api/protected', jwtAuth, (req, res) => {
   res.json({
-    data: 'sadmilk'
+    data: 'authorized'
   });
 });
 

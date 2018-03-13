@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const QuestionSchema = mongoose.Schema({
-  question: {
+  image: {
     type: String,
     required: true
   },
@@ -11,19 +11,22 @@ const QuestionSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  position: 1,
-  next: null
+  mValue: {
+    type: Number,
+    default: 1,
+    required: true
+  }
 });
 
-// QuestionSchema.methods.serialize = function() {
-//   return {
-//     id: this._id,
-//     question: this.question,
-//     answer: this.answe
-//   };
-// };
+QuestionSchema.methods.serialize = function() {
+  return {
+    id: this._id,
+    image: this.image,
+    answer: this.answer,
+    mValue: this.mValue
+  };
+};
 
 const Question = mongoose.model('Question', QuestionSchema);
 
 module.exports = {Question};
-module.exports = QuestionSchema;
