@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const {User} = require('./models');
-const {Question} = require('../questions/models');
-
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
@@ -123,7 +121,6 @@ router.post('/', jsonParser, (req, res) => {
         {_id: '5aa7e992734d1d6b712047be'}
       ];
       const randomizedList = shuffle(questionList);
-      console.log(randomizedList);
       return User.create({
         username,
         password: hash,
@@ -151,12 +148,13 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
+// This is when fetching question
 router.get('/:id', (req, res) => {
   User
     .findById(req.params.id)
     .populate('questions')
     .then(user => {
-      res.json(user.serialize());
+      res.json(user.serialize().questions[0]);
     })
     .catch(err => {
       console.error(err);
