@@ -100,21 +100,34 @@ router.post('/', jsonParser, (req, res) => {
       return User.hashPassword(password);
     })
     .then(hash => {
+      function shuffle(array) {
+        let j = 0, temp = null;
+        for (let i=array.length-1; i > 0; i-=1) {
+          j = Math.floor(Math.random() * (i + 1));
+          temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+        }
+        return array;
+      }
+      const questionList = [
+        {_id: '5aa7e931734d1d6b712047a2'},
+        {_id: '5aa7e945734d1d6b712047ab'},
+        {_id: '5aa7e953734d1d6b712047ad'},
+        {_id: '5aa7e95b734d1d6b712047af'},
+        {_id: '5aa7e965734d1d6b712047b1'},
+        {_id: '5aa7e96d734d1d6b712047b5'},
+        {_id: '5aa7e97a734d1d6b712047b8'},
+        {_id: '5aa7e982734d1d6b712047b9'},
+        {_id: '5aa7e98b734d1d6b712047bd'},
+        {_id: '5aa7e992734d1d6b712047be'}
+      ];
+      const randomizedList = shuffle(questionList);
+      console.log(randomizedList);
       return User.create({
         username,
         password: hash,
-        questions: [
-          {_id: '5aa7e931734d1d6b712047a2'},
-          {_id: '5aa7e945734d1d6b712047ab'},
-          {_id: '5aa7e953734d1d6b712047ad'},
-          {_id: '5aa7e95b734d1d6b712047af'},
-          {_id: '5aa7e965734d1d6b712047b1'},
-          {_id: '5aa7e96d734d1d6b712047b5'},
-          {_id: '5aa7e97a734d1d6b712047b8'},
-          {_id: '5aa7e982734d1d6b712047b9'},
-          {_id: '5aa7e98b734d1d6b712047bd'},
-          {_id: '5aa7e992734d1d6b712047be'}
-        ]
+        questions: randomizedList
       });
     })
     .then(user => {
