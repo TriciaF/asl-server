@@ -147,7 +147,7 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-// This is when fetching question
+// Fetch current question
 router.get('/:id', (req, res) => {
   User
     .findById(req.params.id)
@@ -159,6 +159,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
+// If user answered correctly, 
 router.put('/:id', jsonParser, (req, res) => {
   User
     .findById(req.params.id)
@@ -189,20 +190,12 @@ router.put('/:id', jsonParser, (req, res) => {
     })
     .then(result => {
       User
-        .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions})
+        .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions}, {new: true})
         .then(updated => {
-          res.json(updated);
+          res.status(205).json(updated);
         })
         .catch(err => console.error(err));
     });
 });
-
-function algorithm(array) {
-  const m = array[0].mValue;
-  if (m+1 >= array.length) {
-    return [...array.slice(1), array[0]];
-  }
-  return [...array.slice(1, m+1), array[0], ...array.slice(m+1)]
-}
 
 module.exports = {router};
