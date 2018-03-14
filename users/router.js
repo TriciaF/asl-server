@@ -171,7 +171,7 @@ router.put('/:id', jsonParser, (req, res) => {
         result.questions[currentIndex].mValue = m;
       } else {
         m = 1;
-        result.questions[currentIndex].mValue = 1;
+        result.questions[currentIndex].mValue = m;
       }
       result.current = current.next;
 
@@ -179,11 +179,11 @@ router.put('/:id', jsonParser, (req, res) => {
         for (let i=0; i<m; i++) {
           current = result.questions[current.next];
         }
-        result.questions[result.current].next = current.next;
+        result.questions[currentIndex].next = current.next;
         current.next = currentIndex;
         return result;
       }
-      result.questions[result.current].next = null;
+      result.questions[currentIndex].next = null;
       current.next = currentIndex;
       return result;
     })
