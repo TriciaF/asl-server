@@ -160,38 +160,41 @@ router.get('/:id', (req, res) => {
 });
 
 router.put('/:id', jsonParser, (req, res) => {
-  if (req.body.correct) {
-
-    User
-      .findById(req.params.id)
-      .then(result => {
-        let current = result.questions[result.current];
-        let currentIndex = result.current;
-        const m = result.questions[currentIndex].mValue * 2;
+  User
+    .findById(req.params.id)
+    .then(result => {
+      let current = result.questions[result.current];
+      let currentIndex = result.current;
+      let m;
+      if (req.body.correct) {
+        m = result.questions[currentIndex].mValue * 2;
         result.questions[currentIndex].mValue = m;
-        result.current = current.next;
+      } else {
+        m = 1;
+        result.questions[currentIndex].mValue = 1;
+      }
+      result.current = current.next;
 
-        while (current.next !== null) {
-          for (let i=0; i<m; i++) {
-            current = result.questions[current.next];
-          }
-          result.questions[result.current].next = current.next;
-          current.next = currentIndex;
-          return result;
+      while (current.next !== null) {
+        for (let i=0; i<m; i++) {
+          current = result.questions[current.next];
         }
-        result.questions[result.current].next = null;
+        result.questions[result.current].next = current.next;
         current.next = currentIndex;
         return result;
-      })
-      .then(result => {
-        User
-          .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions})
-          .then(updated => {
-            res.json(updated);
-          })
-          .catch(err => console.error(err));
-      });
-  }
+      }
+      result.questions[result.current].next = null;
+      current.next = currentIndex;
+      return result;
+    })
+    .then(result => {
+      User
+        .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions})
+        .then(updated => {
+          res.json(updated);
+        })
+        .catch(err => console.error(err));
+    });
 });
 
 function algorithm(array) {
