@@ -161,4 +161,45 @@ router.get('/:id', (req, res) => {
     });
 });
 
+router.put('/:id', jsonParser, (req, res) => {
+  if (req.body.correct) {
+    // Find specific user using params.id
+    // Populate questions
+    // Find first question in list
+    // Update mValue accordingly
+    // Run questions array through algorithm
+    // Update questions array with new array
+
+    User
+      .findById(req.params.id)
+      .populate('questions')
+      .then(result => {
+        let array = result.questions;
+        array[0].mValue = array[0].mValue * 2;
+        return algorithm(array);
+      })
+      .then(updatedArray => {
+        User
+          .findByIdAndUpdate(req.params.id, {questions: updatedArray})
+          //since we are only storing questions IDs and populating them
+          //we can't update the values of each question (ex. question.mValue)
+          //Can I just get rid of questionSchema and questions collection?
+          .populate('questions')
+          .then(result => {
+            res.json(result);
+          });
+        res.json(updatedArray);
+      })
+      .catch(err => console.error(err));
+  }
+})
+
+function algorithm(array) {
+  const m = array[0].mValue;
+  if (m+1 >= array.length) {
+    return [...array.slice(1), array[0]];
+  }
+  return [...array.slice(1, m+1), array[0], ...array.slice(m+1)]
+}
+
 module.exports = {router};

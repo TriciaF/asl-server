@@ -16,10 +16,6 @@ const UserSchema = mongoose.Schema({
   questions: [{
     type: mongoose.Schema.Types.ObjectId, ref: 'Question'
   }],
-  next: {
-    type: Number,
-    default: null
-  },
   correct: {
     type: Number,
     default: 0
@@ -35,7 +31,6 @@ UserSchema.methods.serialize = function() {
     id: this._id,
     username: this.username,
     questions: this.questions,
-    next: this.next,
     correct: this.correct,
     incorrect: this.incorrect
   };
