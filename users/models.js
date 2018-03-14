@@ -14,7 +14,23 @@ const UserSchema = mongoose.Schema({
     required: true
   },
   questions: [{
-    type: mongoose.Schema.Types.ObjectId, ref: 'Question'
+    image: {
+      type: String,
+      required: true
+    },
+    answer: {
+      type: String,
+      required: true
+    },
+    mValue: {
+      type: Number,
+      default: 1,
+      requred: true
+    },
+    next: {
+      type: Number,
+      required: true
+    }
   }],
   correct: {
     type: Number,

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const {User} = require('./models');
+const LinkedList = require('../linkedlist');
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
@@ -98,6 +99,19 @@ router.post('/', jsonParser, (req, res) => {
       return User.hashPassword(password);
     })
     .then(hash => {
+      const newList = new LinkedList();
+      newList.insertLast({
+        image: 'https://i.imgur.com/QVByr5l.png',
+        answer: 'a'
+      });
+      newList.insertLast({
+        image: 'https://i.imgur.com/tv4s5uF.png',
+        answer: 'b'
+      });
+      newList.insertLast({
+        image: 'https://i.imgur.com/649Jbp9.png',
+        answer: 'c'
+      });
       function shuffle(array) {
         let j = 0, temp = null;
         for (let i=array.length-1; i > 0; i-=1) {
@@ -109,6 +123,7 @@ router.post('/', jsonParser, (req, res) => {
         return array;
       }
       const questionList = [
+        {image:}
         {_id: '5aa7e931734d1d6b712047a2'},
         {_id: '5aa7e945734d1d6b712047ab'},
         {_id: '5aa7e953734d1d6b712047ad'},
