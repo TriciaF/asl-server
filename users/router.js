@@ -165,28 +165,32 @@ router.put('/:id', jsonParser, (req, res) => {
     User
       .findById(req.params.id)
       .then(result => {
-        console.log(result);
         let current = result.questions[result.current];
-        let previous = result.questions[result.current];
         let currentIndex = result.current;
+        const m = result.questions[currentIndex].mValue * 2;
+        result.questions[currentIndex].mValue = m;
         result.current = current.next;
-        const m = result.questions[result.current].mValue * 2;
-        result.questions[result.current].mValue = m;
 
         while (current.next !== null) {
           for (let i=0; i<m; i++) {
-            previous = current;
             current = result.questions[current.next];
           }
           result.questions[result.current].next = current.next;
           current.next = currentIndex;
-          return res.json(result);
+          return result;
         }
         result.questions[result.current].next = null;
         current.next = currentIndex;
-        return res.json(result);
+        return result;
       })
-      .catch(err => console.error(err));
+      .then(result => {
+        User
+          .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions})
+          .then(updated => {
+            res.json(updated);
+          })
+          .catch(err => console.error(err));
+      });
   }
 });
 
