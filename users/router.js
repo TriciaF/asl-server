@@ -120,6 +120,7 @@ router.post('/', jsonParser, (req, res) => {
             username,
             password: hash,
             questions: list,
+            current: 0,
             correct: 0,
             incorrect: 0
           });
@@ -150,9 +151,8 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   User
     .findById(req.params.id)
-    .populate('questions')
     .then(user => {
-      res.json(user.serialize().questions[0]);
+      res.json(user.questions[user.current]);
     })
     .catch(err => {
       console.error(err);
@@ -161,36 +161,34 @@ router.get('/:id', (req, res) => {
 
 router.put('/:id', jsonParser, (req, res) => {
   if (req.body.correct) {
-    // Find specific user using params.id
-    // Populate questions
-    // Find first question in list
-    // Update mValue accordingly
-    // Run questions array through algorithm
-    // Update questions array with new array
 
     User
       .findById(req.params.id)
-      .populate('questions')
       .then(result => {
-        let array = result.questions;
-        array[0].mValue = array[0].mValue * 2;
-        return algorithm(array);
-      })
-      .then(updatedArray => {
-        User
-          .findByIdAndUpdate(req.params.id, {questions: updatedArray})
-          //since we are only storing questions IDs and populating them
-          //we can't update the values of each question (ex. question.mValue)
-          //Can I just get rid of questionSchema and questions collection?
-          .populate('questions')
-          .then(result => {
-            res.json(result);
-          });
-        res.json(updatedArray);
+        console.log(result);
+        let current = result.questions[result.current];
+        let previous = result.questions[result.current];
+        let currentIndex = result.current;
+        result.current = current.next;
+        const m = result.questions[result.current].mValue * 2;
+        result.questions[result.current].mValue = m;
+
+        while (current.next !== null) {
+          for (let i=0; i<m; i++) {
+            previous = current;
+            current = result.questions[current.next];
+          }
+          result.questions[result.current].next = current.next;
+          current.next = currentIndex;
+          return res.json(result);
+        }
+        result.questions[result.current].next = null;
+        current.next = currentIndex;
+        return res.json(result);
       })
       .catch(err => console.error(err));
   }
-})
+});
 
 function algorithm(array) {
   const m = array[0].mValue;

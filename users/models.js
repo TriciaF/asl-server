@@ -31,6 +31,10 @@ const UserSchema = mongoose.Schema({
       type: Number,
     }
   }],
+  current: {
+    type: Number,
+    default: 0
+  },
   correct: {
     type: Number,
     default: 0
@@ -46,6 +50,7 @@ UserSchema.methods.serialize = function() {
     id: this._id,
     username: this.username,
     questions: this.questions,
+    current: this.current,
     correct: this.correct,
     incorrect: this.incorrect
   };
