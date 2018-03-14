@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {Question} = require('../questions/models');
 const {User} = require('./models');
 const LinkedList = require('../linkedlist');
 
@@ -99,57 +100,39 @@ router.post('/', jsonParser, (req, res) => {
       return User.hashPassword(password);
     })
     .then(hash => {
-      const newList = new LinkedList();
-      newList.insertLast({
-        image: 'https://i.imgur.com/QVByr5l.png',
-        answer: 'a'
-      });
-      newList.insertLast({
-        image: 'https://i.imgur.com/tv4s5uF.png',
-        answer: 'b'
-      });
-      newList.insertLast({
-        image: 'https://i.imgur.com/649Jbp9.png',
-        answer: 'c'
-      });
-      function shuffle(array) {
-        let j = 0, temp = null;
-        for (let i=array.length-1; i > 0; i-=1) {
-          j = Math.floor(Math.random() * (i + 1));
-          temp = array[i];
-          array[i] = array[j];
-          array[j] = temp;
-        }
-        return array;
-      }
-      const questionList = [
-        {image:}
-        {_id: '5aa7e931734d1d6b712047a2'},
-        {_id: '5aa7e945734d1d6b712047ab'},
-        {_id: '5aa7e953734d1d6b712047ad'},
-        {_id: '5aa7e95b734d1d6b712047af'},
-        {_id: '5aa7e965734d1d6b712047b1'},
-        {_id: '5aa7e96d734d1d6b712047b5'},
-        {_id: '5aa7e97a734d1d6b712047b8'},
-        {_id: '5aa7e982734d1d6b712047b9'},
-        {_id: '5aa7e98b734d1d6b712047bd'},
-        {_id: '5aa7e992734d1d6b712047be'}
-      ];
-      const randomizedList = shuffle(questionList);
-      return User.create({
-        username,
-        password: hash,
-        questions: randomizedList
-      });
-    })
-    .then(user => {
-      return res.status(201).json(user.serialize());
-    })
-    .catch(err => {
-      if (err.reason === 'ValidationError') {
-        return res.status(err.code).json(err);
-      }
-      res.status(500).json({code: 500, message: 'Internal server error'});
+      const list = [];
+
+      Question
+        .find()
+        .then(questions => {
+          for (let i=0; i<questions.length; i++) {
+            list.push({
+              image: questions[i].image,
+              answer: questions[i].answer,
+              mValue: 1,
+              next: i+1 > questions.length - 1 ? null : i+1
+            });
+          }
+          return list;
+        })
+        .then(list => {
+          return User.create({
+            username,
+            password: hash,
+            questions: list,
+            correct: 0,
+            incorrect: 0
+          });
+        })
+        .then(user => {
+          return res.status(201).json(user.serialize());
+        })
+        .catch(err => {
+          if (err.reason === 'ValidationError') {
+            return res.status(err.code).json(err);
+          }
+          res.status(500).json({code: 500, message: 'Internal server error'});
+        });
     });
 });
 

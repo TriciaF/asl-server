@@ -29,7 +29,6 @@ const UserSchema = mongoose.Schema({
     },
     next: {
       type: Number,
-      required: true
     }
   }],
   correct: {
