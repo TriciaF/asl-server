@@ -196,7 +196,7 @@ router.put('/:id', jsonParser, (req, res) => {
       User
         .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions, correct: result.correct, incorrect: result.incorrect}, {new: true})
         .then(updated => {
-          res.status(205).json(updated.questions[updated.current]);
+          res.status(200).json(updated.questions[updated.current]);
         })
         .catch(err => console.error(err));
     });
