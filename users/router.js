@@ -161,46 +161,7 @@ router.get('/:id', (req, res) => {
 // update mValue and traverse through list to insert current question
 // m nodes back by updating next pointers accordingly
 // then updating our user in db
-// router.put('/:id', jsonParser, (req, res) => {
-//   User
-//     .findById(req.params.id)
-//     .then(result => {
-//       let current = result.questions[result.current];
-//       let currentIndex = result.current;
-//       let m;
-//       if (req.body.correct) {
-//         m = result.questions[currentIndex].mValue * 2;
-//         result.questions[currentIndex].mValue = m;
-//         result.correct++;
-//       } else {
-//         m = 1;
-//         result.questions[currentIndex].mValue = m;
-//         result.incorrect++;
-//       }
-//       result.current = current.next;
-
-//       while (current.next !== null) {
-//         for (let i=0; i<m; i++) {
-//           current = result.questions[current.next];
-//         }
-//         result.questions[currentIndex].next = current.next;
-//         current.next = currentIndex;
-//         return result;
-//       }
-//       result.questions[currentIndex].next = null;
-//       current.next = currentIndex;
-//       return result;
-//     })
-//     .then(result => {
-//       User
-//         .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions, correct: result.correct, incorrect: result.incorrect}, {new: true})
-//         .then(updated => {
-//           res.status(205).json(updated.serialize());
-//         })
-//         .catch(err => console.error(err));
-//     });
-// });
-
+// and then send next question
 router.put('/:id', jsonParser, (req, res) => {
   User
     .findById(req.params.id)
@@ -235,7 +196,7 @@ router.put('/:id', jsonParser, (req, res) => {
       User
         .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions, correct: result.correct, incorrect: result.incorrect}, {new: true})
         .then(updated => {
-          res.status(205).json(updated.serialize());
+          res.status(205).json(updated.questions[updated.current]);
         })
         .catch(err => console.error(err));
     });
