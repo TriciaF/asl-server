@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 
 const {Question} = require('../questions/models');
 const {User} = require('./models');
-const LinkedList = require('../linkedlist');
 
 const router = express.Router();
 const jsonParser = bodyParser.json();
@@ -159,7 +158,9 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// If user answered correctly, 
+// update mValue and traverse through list to insert current question
+// m nodes back by updating next pointers accordingly
+// then updating our user in db
 router.put('/:id', jsonParser, (req, res) => {
   User
     .findById(req.params.id)
@@ -170,9 +171,11 @@ router.put('/:id', jsonParser, (req, res) => {
       if (req.body.correct) {
         m = result.questions[currentIndex].mValue * 2;
         result.questions[currentIndex].mValue = m;
+        result.correct++;
       } else {
         m = 1;
         result.questions[currentIndex].mValue = m;
+        result.incorrect++;
       }
       result.current = current.next;
 
@@ -190,7 +193,7 @@ router.put('/:id', jsonParser, (req, res) => {
     })
     .then(result => {
       User
-        .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions}, {new: true})
+        .findByIdAndUpdate(req.params.id, {current: result.current, questions: result.questions, correct: result.correct, incorrect: result.incorrect}, {new: true})
         .then(updated => {
           res.status(205).json(updated);
         })
