@@ -4,8 +4,9 @@ const {TEST_DATABASE_URL} = require('../config');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const {dbConnect, dbDisconnect} = require('../db-mongoose');
-const {app} = require('../server');
-const {User} = require('../users/models');
+const {app, runServer, closeServer} = require('../server');
+const {Question} = require('../questions/models');
+
 
 const expect = chai.expect;
 
@@ -20,21 +21,23 @@ describe('/api/user', function() {
 	const mValue = 'exampleValue';
 
 	before(function() {
-		User.remove({});
+		Question.remove({});
+		// runServer();
 		return dbConnect(TEST_DATABASE_URL);
 	});
   
 	after(function() {
+		// closeServer();
 		return dbDisconnect();
 	});
 
 	beforeEach(function() {});
 
 	afterEach(function() {
-		return User.remove({});
+		return Question.remove({});
 	});
   
-	describe('Test Quesiton endpoint', function () {
+	describe('api/questions', function () {
 		describe('POST', function() {
 			it('Should reject if non-required field', function () {
 				return chai
@@ -59,6 +62,39 @@ describe('/api/user', function() {
 						expect(res.body.location).to.equal('answer');
 					});
 			});
+			it('Should create a Question object', function () {
+				return chai
+					.request(app)
+					.post('api/questions')
+					.send({
+						image,
+						answer,
+						mValue
+					})
+					.then (res => {
+						expect(res).to.have.status(201);
+						expect(res.body).to.be.an('object');
+						expect(res.body).to.have.keys(
+							'image',
+							'answer',
+							'mValue',
+							'id'
+						);
+						expect(res.body.image).to.equal(image);
+						expect(res.body.answer).to.equal(answer);
+						expect(res.body.mValue).to.equal(mValue);
+						return Question.findOne({image});
+					})
+					.then(question => {
+						expect(question).to.not.be.null;
+						expect(question.image).to.equal(image);
+					})
+					.catch(err => {
+						if (err instanceof chai.AssertionError) {
+							throw err;
+						}
+					});
+			}); 
 		});
-	}); 
+	});
 });
