@@ -17,18 +17,20 @@ const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 mongoose.Promise = global.Promise;
 const app = express();
 
-app.use(
-	morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-		skip: (req, res) => process.env.NODE_ENV === 'test'
-	})
-);
+app.use(morgan('common'));
+
+// app.use(
+// 	morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
+// 		skip: (req, res) => process.env.NODE_ENV === 'test'
+// 	})
+// );
 
 //Turn this section 'on' if doing local development
-app.use(
-	cors({
-		origin: CLIENT_ORIGIN
-	})
-);
+// app.use(
+// 	cors({
+// 		origin: CLIENT_ORIGIN
+// 	})
+// );
 // ifor CORS
 app.use(function(req, res, next) 
 {
