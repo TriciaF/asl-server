@@ -14,6 +14,7 @@ const { router: usersRouter } = require('./users');
 const { router: questionsRouter } = require('./questions');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
+mongoose.Promise = global.Promise;
 const app = express();
 
 app.use(
@@ -72,10 +73,23 @@ function runServer(port = PORT) {
 			console.error(err);
 		});
 }
+function closeServer() {
+	return mongoose.disconnect().then(() => {
+		return new Promise((resolve, reject) => {
+			console.log('Closing server');
+			server.close(err => {
+				if (err) {
+					return reject(err);
+				}
+				resolve();
+			});
+		});
+	});
+}
 
 if (require.main === module) {
 	dbConnect();
 	runServer();
 }
 
-module.exports = {app};
+module.exports = {app, runServer, closeServer};

@@ -10,7 +10,7 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.post('/', jsonParser, (req, res) => {
-	console.log('Enter the user/post endpoint');
+	console.log('Enter the user/post endpoint ', req.body.username, req.body.password);
 	const requiredFields = ['username', 'password'];
 	const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -23,11 +23,10 @@ router.post('/', jsonParser, (req, res) => {
 		});
 	}
 
-	const stringFields = ['username', 'password'];
+	const stringFields = ['username', 'password', 'firstName', 'lastName'];
 	const nonStringField = stringFields.find(
 		field => field in req.body && typeof req.body[field] !== 'string'
 	);
-
 	if (nonStringField) {
 		return res.status(422).json({
 			code: 422,
@@ -37,7 +36,7 @@ router.post('/', jsonParser, (req, res) => {
 		});
 	}
 
-	const explicityTrimmedFields = ['username', 'password'];
+	const explicityTrimmedFields = ['username', 'password', 'firstName', 'lastName'];
 	const nonTrimmedField = explicityTrimmedFields.find(
 		field => req.body[field].trim() !== req.body[field]
 	);
@@ -137,16 +136,6 @@ router.post('/', jsonParser, (req, res) => {
 					res.status(500).json({code: 500, message: 'Internal server error'});
 				});
 		});
-});
-
-// Should remove later since I don't want anyone to have access to all users
-router.get('/', (req, res) => {
-	User.find()
-		.populate('questions')
-		.then(users => {
-			res.json(users.map(user => user.serialize()));
-		})
-		.catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
 // Fetch current question
