@@ -1,3 +1,5 @@
+'use strict';
+
 const {router} = require('./router');
 const {localStrategy, jwtStrategy} = require('./strategies');
 

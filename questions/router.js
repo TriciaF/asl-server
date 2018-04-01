@@ -26,7 +26,6 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', jsonParser, (req, res) => {
-	console.log('Enter Question /POST = ');
 	const requiredFields = ['image', 'answer', 'mValue'];
 	const missingField = requiredFields.find(field => !(field in req.body));
 
