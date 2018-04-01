@@ -2,7 +2,7 @@
 
 module.exports = {
 	PORT: process.env.PORT || 8080,
-	CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+	CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'https://asl-learning.netlify.com',
 	DATABASE_URL:
         process.env.DATABASE_URL || 'mongodb://TriciaF:tjandsam01@ds229549.mlab.com:29549/asl_questions',
 	TEST_DATABASE_URL:
