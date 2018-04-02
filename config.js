@@ -7,7 +7,7 @@ module.exports = {
         process.env.DATABASE_URL || 'mongodb://TriciaF:tjandsam01@ds229549.mlab.com:29549/asl_questions',
 	TEST_DATABASE_URL:
         process.env.TEST_DATABASE_URL ||
-        'mongodb://localhost/asl-questions-test-database',
+        'mongodb://TriciaF:tjandsam01@ds229549.mlab.com:29549/asl_questions',
 	JWT_SECRET: 'tjandsam01', /*process.env.JWT_SECRET,*/
 	JWT_EXPIRY: process.env.JWT_EXPIRY || '7d'
 };
