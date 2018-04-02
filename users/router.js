@@ -142,6 +142,7 @@ router.get('/:id', (req, res) => {
 	User
 		.findById(req.params.id)
 		.then(user => {
+			console.log('user = ', user);
 			res.json(user.questions[user.current]);
 		})
 		.catch(err => {
