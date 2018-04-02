@@ -18,6 +18,7 @@ router.get('/:id', (req, res) => {
 	Question
 		.findById(req.params.id)
 		.then(result => {
+			console.log('question data = ', result);
 			res.json(result.serialize());
 		})
 		.catch(error => {
