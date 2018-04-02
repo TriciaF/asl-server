@@ -7,7 +7,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const passport = require('passport');
 
-const {PORT, CLIENT_ORIGIN} = require('./config');
+const {PORT, CLIENT_ORIGIN, DATABASE_URL} = require('./config');
 const {dbConnect} = require('./db-mongoose');
 
 const { router: usersRouter } = require('./users');
@@ -67,15 +67,24 @@ app.use('*', (req, res) => {
 	return res.status(404).json({ message: 'Not Found' });
 });
 
-function runServer(port = PORT) {
-	const server = app
-		.listen(port, () => {
-			console.info(`App listening on port ${server.address().port}`);
-		})
-		.on('error', err => {
-			console.error('Express failed to start');
-			console.error(err);
+let server;
+
+function runServer(databaseUrl = DATABASE_URL, port = PORT) {
+	return new Promise((resolve, reject) => {
+		mongoose.connect(databaseUrl, { useMongoClient: true }, err => {
+			if (err) {
+				return reject(err);
+			}
+			server = app.listen(port, () => {
+				console.log(`Your app is listening on port ${port}`);
+				resolve();
+			})
+				.on('error', err => {
+					mongoose.disconnect();
+					reject(err);
+				});
 		});
+	});
 }
 function closeServer() {
 	return mongoose.disconnect().then(() => {
@@ -92,8 +101,7 @@ function closeServer() {
 }
 
 if (require.main === module) {
-	dbConnect();
-	runServer();
+	runServer().catch(err => console.error(err));
 }
 
 module.exports = {app, runServer, closeServer};

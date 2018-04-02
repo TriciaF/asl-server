@@ -21,14 +21,11 @@ describe('/api/user', function() {
 	const mValue = 'exampleValue';
 
 	before(function() {
-		Question.remove({});
-		// runServer();
-		return dbConnect(TEST_DATABASE_URL);
+		return runServer(TEST_DATABASE_URL);
 	});
   
 	after(function() {
-		// closeServer();
-		return dbDisconnect();
+		return closeServer();
 	});
 
 	beforeEach(function() {});

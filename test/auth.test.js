@@ -21,19 +21,13 @@ describe('Auth endpoints', function () {
 	const password = 'examplePass';
 	const firstName = 'Example';
 	const lastName = 'User';
-	const correct = 0;
-	const current = 0;
-	const incorrect = 0;
-	const questions = [];
-	let id;
 
 	before(function() {
-		User.remove({});
-		return dbConnect(TEST_DATABASE_URL);
+		return runServer(TEST_DATABASE_URL);
 	});
   
 	after(function() {
-		return dbDisconnect();
+		return closeServer();
 	});
 
 	beforeEach(function() {

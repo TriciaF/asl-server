@@ -4,7 +4,7 @@ const {TEST_DATABASE_URL} = require('../config');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const {dbConnect, dbDisconnect} = require('../db-mongoose');
-const {app} = require('../server');
+const {app, runServer, closeServer} = require('../server');
 const {User} = require('../users/models');
 
 const expect = chai.expect;
@@ -26,12 +26,11 @@ describe('/api/user', function() {
 	const id = 0;
 
 	before(function() {
-		User.remove({});
-		return dbConnect(TEST_DATABASE_URL);
+		return runServer(TEST_DATABASE_URL);
 	});
   
 	after(function() {
-		return dbDisconnect();
+		return closeServer();
 	});
 
 	beforeEach(function() {});
