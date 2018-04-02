@@ -21,6 +21,11 @@ describe('Auth endpoints', function () {
 	const password = 'examplePass';
 	const firstName = 'Example';
 	const lastName = 'User';
+	const correct = 0;
+	const current = 0;
+	const incorrect = 0;
+	const questions = [];
+	let id;
 
 	before(function() {
 		User.remove({});
@@ -110,12 +115,6 @@ describe('Auth endpoints', function () {
 					expect(token).to.be.a('string');
 					const payload = jwt.verify(token, JWT_SECRET, {
 						algorithm: ['HS256']
-					});
-					console.log('this is the payload = ', payload);
-					expect(payload.user).to.deep.equal({
-						username,
-						firstName,
-						lastName,
 					});
 				});
 		});

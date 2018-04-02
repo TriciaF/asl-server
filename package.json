@@ -4,10 +4,10 @@
     "description": "Template for an Express backend",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index.js",
+        "start": "nodemon server.js",
         "test": "mocha --timeout 5000 --colors --watch */*.test.js",
         "cover": "nodemon --exec nyc --reporter=lcov --reporter=text-summary mocha test/setup.test.js */*.test.js",
-        "heroku": "node index.js",
+        "heroku": "node server.js",
         "travis": "mocha test/setup.test.js */*.test.js"
     },
     "author": "Joe Turner <jturner@thinkful.com>",

@@ -23,6 +23,7 @@ describe('/api/user', function() {
 	const current = 0;
 	const	correct = 0;
 	const incorrect = 0;
+	const id = 0;
 
 	before(function() {
 		User.remove({});
@@ -141,60 +142,6 @@ describe('/api/user', function() {
 							'Incorrect field type: expected string'
 						);
 						expect(res.body.location).to.equal('password');
-					});
-			});
-			it('Should reject users with non-string first name', function() {
-				return chai
-					.request(app)
-					.post('/api/users')
-					.send({
-						username,
-						password,
-						firstName: 1234,
-						lastName,
-					})
-					.then(() =>
-						expect.fail(null, null, 'Request should not succeed')
-					)
-					.catch(err => {
-						if (err instanceof chai.AssertionError) {
-							throw err;
-						}
-
-						const res = err.response;
-						expect(res).to.have.status(422);
-						expect(res.body.reason).to.equal('ValidationError');
-						expect(res.body.message).to.equal(
-							'Incorrect field type: expected string'
-						);
-						expect(res.body.location).to.equal('firstName');
-					});
-			});
-			it('Should reject users with non-string last name', function() {
-				return chai
-					.request(app)
-					.post('/api/users')
-					.send({
-						username,
-						password,
-						firstName,
-						lastName: 1234,
-					})
-					.then(() =>
-						expect.fail(null, null, 'Request should not succeed')
-					)
-					.catch(err => {
-						if (err instanceof chai.AssertionError) {
-							throw err;
-						}
-
-						const res = err.response;
-						expect(res).to.have.status(422);
-						expect(res.body.reason).to.equal('ValidationError');
-						expect(res.body.message).to.equal(
-							'Incorrect field type: expected string'
-						);
-						expect(res.body.location).to.equal('lastName');
 					});
 			});
 			it('Should reject users with non-trimmed username', function() {
@@ -340,6 +287,7 @@ describe('/api/user', function() {
 					current,
 					correct,
 					incorrect,
+					id
 				})
 					.then(() => {
 						// Try to create a second user with the same username
