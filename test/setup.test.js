@@ -3,7 +3,7 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-
+const {dbConnect, dbDisconnect} = require('../db-mongoose');
 const {runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
 
@@ -18,11 +18,11 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 before(function() {
-	return runServer(TEST_DATABASE_URL);
+	return dbConnect(TEST_DATABASE_URL);
 });
 
 after(function() {
-	return closeServer();
+	return dbDisconnect();
 });
 
 describe('Mocha and Chai', function() {

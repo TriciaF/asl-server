@@ -26,11 +26,11 @@ describe('/api/user', function() {
 	const id = 0;
 
 	before(function() {
-		return runServer(TEST_DATABASE_URL);
+		return dbConnect(TEST_DATABASE_URL);
 	});
   
 	after(function() {
-		return closeServer();
+		return dbDisconnect();
 	});
 
 	beforeEach(function() {});
