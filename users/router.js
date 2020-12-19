@@ -105,6 +105,7 @@ router.post('/', jsonParser, (req, res) => {
 			Question
 				.find()
 				.then(questions => {
+					console.log('Questions = ',questions);
 					for (let i=0; i<questions.length; i++) {
 						list.push({
 							image: questions[i].image,
